@@ -67,10 +67,12 @@ def fenotip(populasi, batasBawah, batasAtas):
         fullKromosom = np.array(populasi[i])
         kromosom1 = np.split(fullKromosom, 2)[0]
         kromosom2 = np.split(fullKromosom, 2)[1]
-        print(fullKromosom, kromosom1, kromosom2)
         x1 = genotif(kromosom1, batasBawah, batasAtas)
         x2 = genotif(kromosom2, batasBawah, batasAtas)
-        x.append([x1, x2])
+        x.append({i: {
+            "x1": x1,
+            "x2": x2,
+        }})
     return x
 
 
@@ -89,24 +91,59 @@ def rumus(x, y):
 # nilai x1 dan x2 di masukkan kedalam fungsi rumus
 #fitness = -rumus(x1,x2)
 # return fitness
-def fitness(allFenotip):
+def fitness(x1, x2):
+    return -1 * rumus(x1, x2)
+
+# buat fungsi evaluate yang mereturn nilai kumpulan fitness setiap populasi
+
+
+def evaluate(allFenotip):
     allResult = []
-    for fenotip in allFenotip:
-        x1 = fenotip[0]
-        x2 = fenotip[1]
-        result = rumus(x1, x2)
-        allResult.append(result)
+    for i in range(len(allFenotip)):
+        fenotip = allFenotip[i]
+
+        x1 = fenotip[i]["x1"]
+        x2 = fenotip[i]["x2"]
+        fenotip[i]["fitness"] = fitness(x1, x2)
+        allResult.append(fenotip)
     return allResult
 
-
-allResult = fitness(allFenotip)
-print("all result :", allResult)
-# buat fungsi evaluate yang mereturn nilai kumpulan fitness setiap populasi
+    # return allResult
 
 # buat fungsi elitism
 # urutkan populasi berdasarkan nilai fitness tertinggi
 # bagi dua jumlah populasi
 # print populasi terbaik (setelah dibagi 2)
+
+
+# {1: {'x1': 1.6129032258064515, 'x2': 1.8064516129032255, 'fitness': -3.523450555718238}}
+
+
+def getFitnessValue(x):
+    thisISkey = 0
+    [[key, value]] = x.items()
+
+    return x[key]["fitness"]
+
+
+def elitism(populasi, allFenotip):
+    allResult = evaluate(allFenotip)
+    sortedResult = sorted(
+        allResult, key=getFitnessValue, reverse=True)
+
+    resultAsNParray = np.array(sortedResult)
+    resultKebagi = np.split(resultAsNParray, 2)
+
+    newPopulasi = []
+    for index in range(len(resultKebagi[0])):
+        item = resultKebagi[0][index]
+        [[key, value]] = item.items()
+
+        newPopulasi.append(populasi[key])
+    print("selected popoulasi: ", newPopulasi)
+
+
+elitism(populasi, allFenotip)
 
 # buat fungsi parent selection
 # buat variable yang dapat menampung kromosom populasi secara random (dibagi 2) = 14
