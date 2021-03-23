@@ -19,7 +19,7 @@ def createKromosom(panjangKromosom):
     for i in range(panjangKromosom):
         kromosom.append(random.randint(0, 1))
     return kromosom
-# Kromosom : [0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0]
+
 # buat suatu fungsi untuk membuat populasi (kumpulan dari kromosom)
 
 
@@ -28,8 +28,6 @@ def generatePopulasi(panjangPopulasi):
     for i in range(panjangPopulasi):
         populasi.append(createKromosom(10))
     return populasi
-
-# Populasi : [[1, 0, 0, 1, 0, 1, 1, 1, 1, 1], [0, 0, 1, 0, 1, 1, 1, 0, 1, 1], [0, 0, 1, 1, 0, 1, 1, 0, 1, 1], [1, 0, 0, 0, 0, 0, 0, 1, 1, 1], [1, 0, 1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 1, 1], [0, 1, 1, 0, 0, 0, 1, 0, 1, 0], [1, 0, 0, 1, 1, 1, 0, 0, 1, 0], [1, 1, 1, 1, 0, 0, 1, 0, 0, 1]]
 
 # fungsi genotif
 # buat perulangan yang dapat menghitung genotif setiap populasi
@@ -47,11 +45,6 @@ def genotif(kromosom, batasBawah, batasAtas):
 
     return batasBawah + (((batasAtas - batasBawah) / pembagi) * pengkali)
 
-
-populasi = generatePopulasi(panjangPopulasi)
-print("Populasi :", populasi)
-
-
 # buat fungsi fenotipe dengan memanggil fungsi genotif sebelumnya
 # triknya panjang kromoson di bagi 2
 # 0 1 0 | 0 1 0
@@ -60,6 +53,7 @@ print("Populasi :", populasi)
 # x2 = (panggil fungsi genotif())
 
 # return x1,x2
+
 
 def fenotip(populasi, batasBawah, batasAtas):
     x = []
@@ -77,8 +71,6 @@ def fenotip(populasi, batasBawah, batasAtas):
 
 
 # print fungsi fenotipe dengan memasukan kumpulan populasi yang telah kita buat
-allFenotip = fenotip(populasi, batasBawahX, batasAtasX)
-print("fenotip : ", allFenotip)
 
 
 # buat fungsi rumus
@@ -108,22 +100,17 @@ def evaluate(allFenotip):
         allResult.append(fenotip)
     return allResult
 
-    # return allResult
-
-# buat fungsi elitism
-# urutkan populasi berdasarkan nilai fitness tertinggi
-# bagi dua jumlah populasi
-# print populasi terbaik (setelah dibagi 2)
-
-
-# {1: {'x1': 1.6129032258064515, 'x2': 1.8064516129032255, 'fitness': -3.523450555718238}}
-
 
 def getFitnessValue(x):
     thisISkey = 0
     [[key, value]] = x.items()
 
     return x[key]["fitness"]
+
+# buat fungsi elitism
+# urutkan populasi berdasarkan nilai fitness tertinggi
+# bagi dua jumlah populasi
+# print populasi terbaik (setelah dibagi 2)
 
 
 def elitism(populasi, allFenotip):
@@ -141,9 +128,6 @@ def elitism(populasi, allFenotip):
 
         newPopulasi.append(populasi[key])
     print("selected popoulasi: ", newPopulasi)
-
-
-elitism(populasi, allFenotip)
 
 # buat fungsi parent selection
 # buat variable yang dapat menampung kromosom populasi secara random (dibagi 2) = 14
@@ -175,5 +159,16 @@ elitism(populasi, allFenotip)
 # panggil fungsi mutasi, parameternya setiap kromosom
 
 # buat fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
-# if __name__ == "__main__":
+
+
+def main():
+    populasi = generatePopulasi(panjangPopulasi)
+    print("Populasi :", populasi)
+    allFenotip = fenotip(populasi, batasBawahX, batasAtasX)
+    print("fenotip : ", allFenotip)
+    elitism(populasi, allFenotip)
+
+
+if __name__ == "__main__":
+    main()
 # return populasi terbaik dan nilai fenotypenya
