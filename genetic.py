@@ -1,14 +1,22 @@
 import random
 import numpy as np
+
 # batas1
+
 batasAtasX = 2
 batasBawahX = -1
+
 # batas2
+
 batasAtasY = 1
 batasBawahY = -1
+
 # input jumlah kromosom
+
 panjangKromosom = 14
+
 # input jumlah populasi
+
 panjangPopulasi = 12
 
 # buat suatu fungsi untuk membuat kromosom (random)
@@ -20,7 +28,7 @@ def createKromosom(panjangKromosom):
         kromosom.append(random.randint(0, 1))
     return kromosom
 
-# buat suatu fungsi untuk membuat populasi (kumpulan dari kromosom)
+# fungsi untuk membuat populasi (kumpulan dari kromosom)
 
 
 def generatePopulasi(panjangPopulasi):
@@ -30,10 +38,7 @@ def generatePopulasi(panjangPopulasi):
     return populasi
 
 # fungsi genotif
-# buat perulangan yang dapat menghitung genotif setiap populasi
-
-# Didalam loop, masukkan rumus genotif
-# genotif = batas bawah + ((batas atas - batas bawah) / 2**(-(i+1))) * (kromosom[i] * 2**(-(i+1))))
+# perulangan yang dapat menghitung menghitung pembagi dan pengkali
 
 
 def genotifX(kromosom):
@@ -55,48 +60,44 @@ def genotifY(kromosom):
 
     return batasBawahY + (((batasAtasY - batasBawahY) / pembagi) * pengkali)
 
-# buat fungsi fenotipe dengan memanggil fungsi genotif sebelumnya
-# triknya panjang kromoson di bagi 2
+# fungsi fenotipe dengan memanggil fungsi genotif sebelumnya
+# panjang kromoson di bagi 2
 # 0 1 0 | 0 1 0
-
 # x1 = (panggil fungsi genotif())
 # x2 = (panggil fungsi genotif())
 
-# return x1,x2
+# return x,y
 
 
 def fenotip(populasi):
-    x = []
+    xy = []
     for i in range(len(populasi)):
         fullKromosom = np.array(populasi[i])
         kromosom1 = np.split(fullKromosom, 2)[0]
         kromosom2 = np.split(fullKromosom, 2)[1]
-        x1 = genotifX(kromosom1)
-        x2 = genotifY(kromosom2)
-        x.append({i: {
-            "x": x1,
-            "y": x2,
+        x = genotifX(kromosom1)
+        y = genotifY(kromosom2)
+        xy.append({i: {
+            "x": x,
+            "y": y,
         }})
-    return x
+    return xy
 
 
-# print fungsi fenotipe dengan memasukan kumpulan populasi yang telah kita buat
-
-
-# buat fungsi rumus
+# fungsi rumus
 def rumus(x, y):
     # masukkan rumus
     return np.cos(x**2) * np.sin(y**2) + (x+y)
 
 
-# buat fungsi fitness untuk menghitung fitness setiap kromosom
+# fungsi fitness untuk menghitung fitness setiap kromosom
 # nilai x1 dan x2 di masukkan kedalam fungsi rumus
 # fitness = -rumus(x1,x2)
 # return fitness
-def fitness(x1, x2):
-    return -1 * rumus(x1, x2)
+def fitness(x, y):
+    return -1 * rumus(x, y)
 
-# buat fungsi evaluate yang mereturn nilai kumpulan fitness setiap populasi
+# fungsi evaluate yang mereturn nilai kumpulan fitness setiap populasi
 
 
 def evaluate(allFenotip):
@@ -104,9 +105,9 @@ def evaluate(allFenotip):
     for i in range(len(allFenotip)):
         fenotip = allFenotip[i]
 
-        x1 = fenotip[i]["x"]
-        x2 = fenotip[i]["y"]
-        fenotip[i]["fitness"] = fitness(x1, x2)
+        x = fenotip[i]["x"]
+        y = fenotip[i]["y"]
+        fenotip[i]["fitness"] = fitness(x, y)
         allResult.append(fenotip)
     return allResult
 
@@ -116,7 +117,7 @@ def getFitnessValue(x):
 
     return x[key]["fitness"]
 
-# buat fungsi elitism
+# fungsi elitism
 # urutkan populasi berdasarkan nilai fitness tertinggi
 # bagi dua jumlah populasi
 # print populasi terbaik (setelah dibagi 2)
@@ -137,11 +138,12 @@ def elitism(populasi, allFitness):
 
         newPopulasi.append(populasi[key])
     return newPopulasi
+
 # buat fungsi parent selection
 # buat variable yang dapat menampung kromosom populasi secara random (dibagi 2) = 14
 # masukan ke fungsi evaluate = menghasilkan nilai fitness
-# urutkan populasi berdasarkan nilai fitness nya
-# print 1 populasi yang paling baik (tinggi nilai fitnessnya)
+# mengurutkan populasi berdasarkan nilai fitness nya
+# return index populasi terbaik
 
 
 def parentSelection(allResultEvaluate):
@@ -152,7 +154,6 @@ def parentSelection(allResultEvaluate):
         indv = allResultEvaluate[random.randint(0, len(allResultEvaluate) - 1)]
         [[keyIndv, itemIndv]] = indv.items()
 
-        # if best == [] or fitness(indv) > fitness(best)
         if len(best) == 0:
             best = indv
         else:
@@ -162,13 +163,14 @@ def parentSelection(allResultEvaluate):
 
     return keyBest
 
+# fungsi crossover
+# return offspring
 
-# buat fungsi crossover
+
 def crossover(kromosom1, kromosom2):
     offspring1 = []
     offspring2 = []
     chance = random.randint(0, 70)
-    # if temp <= 0.7
     if chance <= 70:
         # buat titik potong, misalnya offspring = p1[:titik_potong] + p2[titik_potong:]
         for i in range(panjangKromosom):
@@ -181,18 +183,15 @@ def crossover(kromosom1, kromosom2):
     else:
         offspring1 = kromosom1
         offspring2 = kromosom2
-    # return offspring
+
     return offspring1, offspring2
 
-    # p1 = parentSelection(Populasi, Kromosom)) [0,1] [0,1]
-    # p2 = parentSelection(Populasi, Kromosom)) [1,1] [0,1]
-    # crossover(p1,p2)
-
-    # offspring_p1 = [0,1] + [0,1]
-
-    # offspring_p2 =
-
-    # buat fungsi mutasi
+# fungsi mutasi
+# Pm =  0.1
+# hasilRandom = random.random()
+# if hasilRand < 0.1 :
+# random terus menerus
+# return hasil random
 
 
 def mutasi(offspring):
@@ -207,33 +206,15 @@ def mutasi(offspring):
     else:
         mutant = offspring
     return mutant
-    # Pm =  0.1
 
-    # hasilRandom = random.random()
-    # if hasilRand < 0.1 :
-    # random terus menerus
-    # return hasil random
-
-    # panggil fungsi mutasi, parameternya setiap kromosom
-
-    # buat fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
+# fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
+# return populasi terbaik dan nilai fenotypenya
 
 
 def main():
-    # populasi = generatePopulasi(panjangPopulasi)
-    # print("Populasi :", populasi)
-    # allFenotip = fenotip(populasi, batasBawahX, batasAtasX)
-    # print("fenotip : ", allFenotip)
-    # allFitness = evaluate(allFenotip)
-    # elitism(populasi, allFitness)
-    # parent1 = parentSelection(allFitness)
-    # parent2 = parentSelection(allFitness)
-    # print(f"parent 1 : {parent1}, parent 2 : {parent2}")
-    # offspring1, offspring2 = crossover(populasi[parent1], populasi[parent2])
-    # print(offspring1, offspring2)
-    # print(mutasi(offspring1), mutasi(offspring2))
     populasi = generatePopulasi(panjangPopulasi)
 
+    # mencari populasi terbaik sampai generasi ke 20
     for gen in range(1, 20):
         allFenotip = fenotip(populasi)
         allFitness = evaluate(allFenotip)
@@ -263,4 +244,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# return populasi terbaik dan nilai fenotypenya
