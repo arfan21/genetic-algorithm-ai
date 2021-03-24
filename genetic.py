@@ -68,8 +68,9 @@ def fenotip(populasi):
     xy = []
     for i in range(len(populasi)):
         fullKromosom = np.array(populasi[i])
-        kromosom1 = np.split(fullKromosom, 2)[0]
-        kromosom2 = np.split(fullKromosom, 2)[1]
+        splitedKromosom = np.split(fullKromosom, 2)
+        kromosom1 = splitedKromosom[0]
+        kromosom2 = splitedKromosom[1]
         x = genotif(kromosom1, batasBawahX, batasAtasX)
         y = genotif(kromosom2, batasBawahY, batasAtasY)
         xy.append({i: {
@@ -82,7 +83,7 @@ def fenotip(populasi):
 # fungsi rumus
 def rumus(x, y):
     # masukkan rumus
-    return np.cos(x**2) * np.sin(y**2) + (x+y)
+    return ((np.cos(x)**2) * (np.sin(y)**2)) + (x+y)
 
 
 # fungsi fitness untuk menghitung fitness setiap kromosom
@@ -169,7 +170,7 @@ def crossover(kromosom1, kromosom2):
     offspring2 = []
     chance = random.randint(0, 70)
     if chance <= 70:
-        # buat titik potong, misalnya offspring = p1[:titik_potong] + p2[titik_potong:]
+        # titik potong, misalnya offspring = p1[:titik_potong] + p2[titik_potong:]
         for i in range(panjangKromosom):
             if i < ((panjangKromosom // 2)-1):
                 offspring1.append(kromosom1[i])
