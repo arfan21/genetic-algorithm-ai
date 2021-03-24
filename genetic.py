@@ -11,13 +11,17 @@ batasBawahX = -1
 batasAtasY = 1
 batasBawahY = -1
 
-# input jumlah kromosom
+# panjang kromosom
 
-panjangKromosom = 14
+panjangKromosom = 18
 
-# input jumlah populasi
+# panjang populasi
 
-panjangPopulasi = 12
+panjangPopulasi = 16
+
+# panjang gen
+
+panjangGen = 50
 
 # buat suatu fungsi untuk membuat kromosom (random)
 
@@ -41,24 +45,15 @@ def generatePopulasi(panjangPopulasi):
 # perulangan yang dapat menghitung menghitung pembagi dan pengkali
 
 
-def genotifX(kromosom):
+def genotif(kromosom, batasBawah, batasAtas):
     pembagi = 0
     pengkali = 0
     for i in range(len(kromosom)):
         pembagi = pembagi + (2 ** (-(i+1)))
         pengkali = pengkali + kromosom[i]*2**(-(i+1))
 
-    return batasBawahX + (((batasAtasX - batasBawahX) / pembagi) * pengkali)
+    return batasBawah + (((batasAtas - batasBawah) / pembagi) * pengkali)
 
-
-def genotifY(kromosom):
-    pembagi = 0
-    pengkali = 0
-    for i in range(len(kromosom)):
-        pembagi = pembagi + (2 ** (-(i+1)))
-        pengkali = pengkali + kromosom[i]*2**(-(i+1))
-
-    return batasBawahY + (((batasAtasY - batasBawahY) / pembagi) * pengkali)
 
 # fungsi fenotipe dengan memanggil fungsi genotif sebelumnya
 # panjang kromoson di bagi 2
@@ -75,8 +70,8 @@ def fenotip(populasi):
         fullKromosom = np.array(populasi[i])
         kromosom1 = np.split(fullKromosom, 2)[0]
         kromosom2 = np.split(fullKromosom, 2)[1]
-        x = genotifX(kromosom1)
-        y = genotifY(kromosom2)
+        x = genotif(kromosom1, batasBawahX, batasAtasX)
+        y = genotif(kromosom2, batasBawahY, batasAtasY)
         xy.append({i: {
             "x": x,
             "y": y,
@@ -95,7 +90,7 @@ def rumus(x, y):
 # fitness = -rumus(x1,x2)
 # return fitness
 def fitness(x, y):
-    return -1 * rumus(x, y)
+    return rumus(x, y)
 
 # fungsi evaluate yang mereturn nilai kumpulan fitness setiap populasi
 
@@ -158,8 +153,10 @@ def parentSelection(allResultEvaluate):
             best = indv
         else:
             [[keyBest, itemBest]] = best.items()
+
             if itemIndv["fitness"] > itemBest["fitness"]:
                 best = indv
+    [[keyBest, itemBest]] = best.items()
 
     return keyBest
 
@@ -215,7 +212,7 @@ def main():
     populasi = generatePopulasi(panjangPopulasi)
 
     # mencari populasi terbaik sampai generasi ke 20
-    for gen in range(1, 20):
+    for gen in range(1, panjangGen):
         allFenotip = fenotip(populasi)
         allFitness = evaluate(allFenotip)
         newPopulation = elitism(populasi, allFitness)
@@ -228,6 +225,10 @@ def main():
             offspring2 = mutasi(offspring2)
             newPopulation.append(offspring1)
             newPopulation.append(offspring2)
+
+            if len(newPopulation) > panjangPopulasi:
+                newPopulation.pop()
+
         populasi = newPopulation
 
     allFenotip = fenotip(populasi)
@@ -235,8 +236,8 @@ def main():
     bestIndex = parentSelection(allFitness)
     sortedFitness = sorted(
         allFitness, key=getFitnessValue, reverse=True)
-    for fit in sortedFitness:
-        print(f"All Fitness: {fit}")
+    # for fit in sortedFitness:
+    #     print(f"All Fitness: {fit}")
 
     print(f"Best Kromosom : {populasi[bestIndex]}")
     print(f"Best Fitness : {sortedFitness[0]}")
