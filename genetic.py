@@ -205,8 +205,23 @@ def mutasi(offspring):
         mutant = offspring
     return mutant
 
-# fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
-# return populasi terbaik dan nilai fenotypenya
+
+def seleksiSurvivorForNextGen(populasi, newPopulasi, allFitness):
+    while(len(newPopulasi) < panjangPopulasi):
+        parent1 = parentSelection(allFitness)
+        parent2 = parentSelection(allFitness)
+        offspring1, offspring2 = crossover(
+            populasi[parent1], populasi[parent2])
+        offspring1 = mutasi(offspring1)
+        offspring2 = mutasi(offspring2)
+        newPopulasi.append(offspring1)
+        newPopulasi.append(offspring2)
+
+        if len(newPopulasi) > panjangPopulasi:
+            newPopulasi.pop()
+    return newPopulasi
+    # fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
+    # return populasi terbaik dan nilai fenotypenya
 
 
 def main():
@@ -216,21 +231,9 @@ def main():
     for gen in range(1, panjangGen):
         allFenotip = fenotip(populasi)
         allFitness = evaluate(allFenotip)
-        newPopulation = elitism(populasi, allFitness)
-        while(len(newPopulation) < panjangPopulasi):
-            parent1 = parentSelection(allFitness)
-            parent2 = parentSelection(allFitness)
-            offspring1, offspring2 = crossover(
-                populasi[parent1], populasi[parent2])
-            offspring1 = mutasi(offspring1)
-            offspring2 = mutasi(offspring2)
-            newPopulation.append(offspring1)
-            newPopulation.append(offspring2)
+        newPopulasi = elitism(populasi, allFitness)
 
-            if len(newPopulation) > panjangPopulasi:
-                newPopulation.pop()
-
-        populasi = newPopulation
+        populasi = seleksiSurvivorForNextGen(populasi, newPopulasi, allFitness)
 
     allFenotip = fenotip(populasi)
     allFitness = evaluate(allFenotip)
