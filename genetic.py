@@ -159,7 +159,6 @@ def parentSelection(allResultEvaluate):
             if itemIndv["fitness"] > itemBest["fitness"]:
                 best = indv
     [[keyBest, itemBest]] = best.items()
-
     return keyBest
 
 # fungsi crossover
@@ -170,6 +169,7 @@ def crossover(kromosom1, kromosom2):
     offspring1 = []
     offspring2 = []
     chance = random.randint(0, 70)
+
     if chance <= 70:
         # titik potong, misalnya offspring = p1[:titik_potong] + p2[titik_potong:]
         for i in range(panjangKromosom):
