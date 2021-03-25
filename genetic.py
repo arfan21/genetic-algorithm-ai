@@ -71,6 +71,7 @@ def fenotip(populasi):
         splitedKromosom = np.split(fullKromosom, 2)
         kromosom1 = splitedKromosom[0]
         kromosom2 = splitedKromosom[1]
+
         x = genotif(kromosom1, batasBawahX, batasAtasX)
         y = genotif(kromosom2, batasBawahY, batasAtasY)
         xy.append({i: {
@@ -220,31 +221,36 @@ def seleksiSurvivorForNextGen(populasi, newPopulasi, allFitness):
         if len(newPopulasi) > panjangPopulasi:
             newPopulasi.pop()
     return newPopulasi
-    # fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
-    # return populasi terbaik dan nilai fenotypenya
+
+# fungsi main atau code untuk memanggil semua fungsi2 yang telah dibuat
+# return populasi terbaik dan nilai fenotypenya
 
 
 def main():
     populasi = generatePopulasi(panjangPopulasi)
 
     # mencari populasi terbaik sampai generasi ke 20
-    for gen in range(1, panjangGen):
+    for gen in range(1, panjangGen + 1):
         allFenotip = fenotip(populasi)
         allFitness = evaluate(allFenotip)
         newPopulasi = elitism(populasi, allFitness)
+        if gen == 1:
+            sortedFitness = sorted(
+                allFitness, key=getFitnessValue, reverse=True)
+            [[firstGenBestIndex, Fitness]] = sortedFitness[0].items()
+            print(
+                f"First Kromosom : {populasi[firstGenBestIndex]}")
+            print(f"First Fitness : {sortedFitness[0]}")
 
         populasi = seleksiSurvivorForNextGen(populasi, newPopulasi, allFitness)
-
+    print(f"\n--------------- Setelah {panjangGen} Generasi ---------------\n")
     allFenotip = fenotip(populasi)
     allFitness = evaluate(allFenotip)
-    bestIndex = parentSelection(allFitness)
     sortedFitness = sorted(
         allFitness, key=getFitnessValue, reverse=True)
-    # for fit in sortedFitness:
-    #     print(f"All Fitness: {fit}")
-
+    [[bestIndex, Fitness]] = sortedFitness[0].items()
     print(f"Best Kromosom : {populasi[bestIndex]}")
-    print(f"Best Fitness : {sortedFitness[0]}")
+    print(f"Best Fitness : {Fitness}")
 
 
 if __name__ == "__main__":
