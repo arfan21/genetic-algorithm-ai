@@ -23,7 +23,7 @@ panjangPopulasi = 16
 
 panjangGen = 50
 
-# buat suatu fungsi untuk membuat kromosom (random)
+# fungsi untuk membuat kromosom (random)
 
 
 def createKromosom(panjangKromosom):
@@ -84,7 +84,7 @@ def fenotip(populasi):
 # fungsi rumus
 def rumus(x, y):
     # masukkan rumus
-    return ((np.cos(x)**2) * (np.sin(y)**2)) + (x+y)
+    return ((np.cos(x**2)) * (np.sin(y**2))) + (x+y)
 
 
 # fungsi fitness untuk menghitung fitness setiap kromosom
@@ -169,7 +169,6 @@ def crossover(kromosom1, kromosom2):
     offspring1 = []
     offspring2 = []
     chance = random.randint(0, 70)
-
     if chance <= 70:
         # titik potong, misalnya offspring = p1[:titik_potong] + p2[titik_potong:]
         for i in range(panjangKromosom):
@@ -182,7 +181,6 @@ def crossover(kromosom1, kromosom2):
     else:
         offspring1 = kromosom1
         offspring2 = kromosom2
-
     return offspring1, offspring2
 
 # fungsi mutasi
