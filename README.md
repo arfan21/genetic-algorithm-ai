@@ -11,3 +11,11 @@ KELOMPOK :
 -   MUHAMAD ELANG RAMADHAN - 1301190458
 
 ---
+
+```text
+File genetic.py untuk melihat hasil akhir
+```
+
+```text
+File genetic_test.py untuk melihat hasil dari setiap fungsi / prosedur
+```
